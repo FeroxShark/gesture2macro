@@ -1,0 +1,6 @@
+# Global configuration for Gesture2Macro
+camera_index: 0
+window_title: 'Gesture2Macro'
+resolution:
+  width: 640
+  height: 480

@@ -1,1 +1,6 @@
-
+opencv-python
+mediapipe
+PySide6
+PyYAML
+pyautogui
+watchdog

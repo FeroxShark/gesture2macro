@@ -1,0 +1,15 @@
+- name: "Scroll abajo"
+  gesture: "PALMA"
+  macro:
+    type: "scroll"
+    direction: "down"
+    amount: 3
+  cooldown_ms: 700
+
+- name: "Cerrar pestaña"
+  gesture: "PU\u00d1O"
+  macro:
+    type: "key_combo"
+    sequence:
+      - "ctrl+w"
+  cooldown_ms: 1000
