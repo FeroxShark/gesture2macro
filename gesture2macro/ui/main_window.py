@@ -12,6 +12,7 @@ from ..macro_manager import execute_macro
 from ..rules import Rule, load_rules
 from ..utils.image_tools import to_rgb
 from .macro_editor import MacroEditor
+from ..utils.logger import get_logger
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -25,10 +26,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setWindowTitle(config.get("window_title", "Gesture2Macro"))
 
+        self.logger = get_logger(__name__)
+
         self.camera = Camera(config.get("camera_index", 0))
-        self.recognizer = GestureRecognizer()
+        self.recognizer = GestureRecognizer(required_frames=3)
 
         self._create_ui()
+
+        self.logger.info("Ventana principal iniciada")
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_frame)
@@ -55,11 +60,13 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_frame(self) -> None:
         ret, frame = self.camera.read()
         if not ret:
+            self.logger.error("No se pudo leer de la cámara")
             return
 
         rgb = to_rgb(frame)
         gesture = self.recognizer.recognize(rgb)
         if gesture:
+            self.logger.debug("Gesto reconocido: %s", gesture)
             self._handle_gesture(gesture)
 
         h, w, ch = frame.shape
@@ -72,6 +79,9 @@ class MainWindow(QtWidgets.QMainWindow):
             if rule.gesture == gesture:
                 last = self.last_exec.get(rule.name, 0)
                 if now - last >= rule.cooldown_ms / 1000:
+                    self.logger.info(
+                        "Ejecutando macro %s por gesto %s", rule.name, gesture
+                    )
                     execute_macro(rule.macro.type, rule.macro.params)
                     self.statusBar().showMessage(f"{rule.name} ({gesture})")
                     self.last_exec[rule.name] = now

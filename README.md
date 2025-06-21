@@ -6,7 +6,7 @@ El proyecto est\u00e1 dise\u00f1ado para ser modular y f\u00e1cil de extender. I
 
 ## Requisitos
 - Python 3.11
-- Las dependencias listadas en `requirements.txt`
+- Las dependencias listadas en `requirements.txt` con sus versiones fijadas
 
 ## Uso
 Instala las dependencias y ejecuta:
@@ -14,3 +14,4 @@ Instala las dependencias y ejecuta:
 python -m gesture2macro
 ```
 Esto lanzar\u00e1 la captura de video y aplicar\u00e1 las reglas definidas en `rules.yaml`.
+Al guardar desde el editor integrado se crea autom\u00e1ticamente una copia `rules.yaml.bak`.
