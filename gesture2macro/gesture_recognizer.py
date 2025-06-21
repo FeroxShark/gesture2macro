@@ -1,19 +1,27 @@
 """Reconocimiento b\u00e1sico de gestos con MediaPipe."""
 from __future__ import annotations
-import mediapipe as mp
+try:
+    import mediapipe as mp  # type: ignore
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    mp = None
 import numpy as np
 from typing import Optional
 
 
 class GestureRecognizer:
     def __init__(self, min_detection_confidence: float = 0.5, min_tracking_confidence: float = 0.5):
-        self.hands = mp.solutions.hands.Hands(
-            max_num_hands=1,
-            min_detection_confidence=min_detection_confidence,
-            min_tracking_confidence=min_tracking_confidence,
-        )
+        if mp is None:
+            self.hands = None
+        else:
+            self.hands = mp.solutions.hands.Hands(
+                max_num_hands=1,
+                min_detection_confidence=min_detection_confidence,
+                min_tracking_confidence=min_tracking_confidence,
+            )
 
     def recognize(self, frame: np.ndarray) -> Optional[str]:
+        if self.hands is None:
+            return None
         results = self.hands.process(frame)
         if not results.multi_hand_landmarks:
             return None
