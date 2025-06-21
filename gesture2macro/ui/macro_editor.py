@@ -34,5 +34,8 @@ class MacroEditor(QtWidgets.QDialog):
 
     def save(self) -> None:
         """Guarda el contenido del editor en el archivo."""
+        if self.rules_path.exists():
+            backup = self.rules_path.with_suffix(self.rules_path.suffix + ".bak")
+            backup.write_text(self.rules_path.read_text(encoding="utf-8"), encoding="utf-8")
         self.rules_path.write_text(self.text.toPlainText(), encoding="utf-8")
         self.accept()
