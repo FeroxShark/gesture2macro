@@ -19,7 +19,7 @@ class GestureRecognizer:
             self.hands = None
         else:
             self.hands = mp.solutions.hands.Hands(
-                max_num_hands=1,
+                max_num_hands=2,
                 min_detection_confidence=min_detection_confidence,
                 min_tracking_confidence=min_tracking_confidence,
             )
@@ -27,12 +27,14 @@ class GestureRecognizer:
         self.required_frames = max(1, required_frames)
         self._last_gesture: Optional[str] = None
         self._stable_count = 0
+        self.last_results = None
 
     def recognize(self, frame: np.ndarray) -> Optional[str]:
         if self.hands is None:
             return None
 
         results = self.hands.process(frame)
+        self.last_results = results
         if not results.multi_hand_landmarks:
             gesture = None
         else:
