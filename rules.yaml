@@ -13,3 +13,10 @@
     sequence:
       - "ctrl+w"
   cooldown_ms: 1000
+
+- name: "Abrir calculadora"
+  gesture: "PULGAR_ARRIBA"
+  macro:
+    type: "open_app"
+    path: "calc.exe"
+  cooldown_ms: 2000

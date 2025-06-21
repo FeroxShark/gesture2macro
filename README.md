@@ -15,3 +15,10 @@ python -m gesture2macro
 ```
 Esto lanzar\u00e1 la captura de video y aplicar\u00e1 las reglas definidas en `rules.yaml`.
 Al guardar desde el editor integrado se crea autom\u00e1ticamente una copia `rules.yaml.bak`.
+
+### Novedades
+
+- Tema oscuro integrado.
+- Vista con landmarks superpuestos sobre la imagen de la cámara.
+- Nuevos tipos de macro: `open_app`, `write_text` y `move_cursor`.
+- Sonido de confirmación al ejecutar una acción.

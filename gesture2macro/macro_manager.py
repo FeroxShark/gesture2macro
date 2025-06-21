@@ -18,3 +18,18 @@ def execute_macro(macro_type: str, params: Dict[str, Any]) -> None:
     elif macro_type == "click":
         button = params.get("button", "left")
         pyautogui.click(button=button)
+    elif macro_type == "open_app":
+        import subprocess
+
+        path = params.get("path")
+        if path:
+            subprocess.Popen([path])
+    elif macro_type == "write_text":
+        text = params.get("text", "")
+        pyautogui.write(text)
+    elif macro_type == "move_cursor":
+        x = params.get("x")
+        y = params.get("y")
+        duration = params.get("duration", 0)
+        if x is not None and y is not None:
+            pyautogui.moveTo(x, y, duration=duration)

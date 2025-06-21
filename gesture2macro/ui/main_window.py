@@ -5,6 +5,10 @@ import time
 from typing import Dict
 
 from PySide6 import QtCore, QtGui, QtWidgets
+try:
+    import mediapipe as mp  # type: ignore
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    mp = None
 
 from ..camera import Camera
 from ..gesture_recognizer import GestureRecognizer
@@ -30,14 +34,31 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.camera = Camera(config.get("camera_index", 0))
         self.recognizer = GestureRecognizer(required_frames=3)
+        self.statusBar().showMessage("Modelo listo")
 
         self._create_ui()
+        self._apply_dark_theme()
 
         self.logger.info("Ventana principal iniciada")
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
+
+    def _apply_dark_theme(self) -> None:
+        """Aplica un tema oscuro sencillo."""
+        app = QtWidgets.QApplication.instance()
+        if app is None:
+            return
+        app.setStyle("Fusion")
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.ColorRole.Window, QtGui.QColor(53, 53, 53))
+        palette.setColor(QtGui.QPalette.ColorRole.WindowText, QtCore.Qt.GlobalColor.white)
+        palette.setColor(QtGui.QPalette.ColorRole.Base, QtGui.QColor(25, 25, 25))
+        palette.setColor(QtGui.QPalette.ColorRole.Text, QtCore.Qt.GlobalColor.white)
+        palette.setColor(QtGui.QPalette.ColorRole.Button, QtGui.QColor(53, 53, 53))
+        palette.setColor(QtGui.QPalette.ColorRole.ButtonText, QtCore.Qt.GlobalColor.white)
+        app.setPalette(palette)
 
     # ------------------------------------------------------------------ UI ----
     def _create_ui(self) -> None:
@@ -68,6 +89,16 @@ class MainWindow(QtWidgets.QMainWindow):
         if gesture:
             self.logger.debug("Gesto reconocido: %s", gesture)
             self._handle_gesture(gesture)
+        else:
+            self.statusBar().showMessage("Sin gesto")
+
+        if mp and self.recognizer.last_results and self.recognizer.last_results.multi_hand_landmarks:
+            for hand_landmarks in self.recognizer.last_results.multi_hand_landmarks:
+                mp.solutions.drawing_utils.draw_landmarks(
+                    frame,
+                    hand_landmarks,
+                    mp.solutions.hands.HAND_CONNECTIONS,
+                )
 
         h, w, ch = frame.shape
         img = QtGui.QImage(frame.data, w, h, w * ch, QtGui.QImage.Format_BGR888)
@@ -83,6 +114,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         "Ejecutando macro %s por gesto %s", rule.name, gesture
                     )
                     execute_macro(rule.macro.type, rule.macro.params)
+                    QtWidgets.QApplication.beep()
                     self.statusBar().showMessage(f"{rule.name} ({gesture})")
                     self.last_exec[rule.name] = now
 
