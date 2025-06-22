@@ -22,3 +22,4 @@ Al guardar desde el editor integrado se crea autom\u00e1ticamente una copia `rul
 - Vista con landmarks superpuestos sobre la imagen de la cámara.
 - Nuevos tipos de macro: `open_app`, `write_text` y `move_cursor`.
 - Sonido de confirmación al ejecutar una acción.
+- Ventana gráfica para gestionar reglas sin editar YAML manualmente.

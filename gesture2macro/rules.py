@@ -38,3 +38,20 @@ def load_rules(path: str | Path) -> List[Rule]:
             )
         )
     return rules
+
+
+def save_rules(path: str | Path, rules: List[Rule]) -> None:
+    """Guarda la lista de reglas en formato YAML."""
+    data = []
+    for rule in rules:
+        macro_dict = {"type": rule.macro.type, **rule.macro.params}
+        data.append(
+            {
+                "name": rule.name,
+                "gesture": rule.gesture,
+                "macro": macro_dict,
+                "cooldown_ms": rule.cooldown_ms,
+            }
+        )
+    with open(path, "w", encoding="utf-8") as fh:
+        yaml.safe_dump(data, fh, allow_unicode=True, sort_keys=False)

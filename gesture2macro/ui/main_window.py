@@ -16,6 +16,7 @@ from ..macro_manager import execute_macro
 from ..rules import Rule, load_rules
 from ..utils.image_tools import to_rgb
 from .macro_editor import MacroEditor
+from .rule_manager import RuleManager
 from ..utils.logger import get_logger
 
 
@@ -70,9 +71,17 @@ class MainWindow(QtWidgets.QMainWindow):
         menu = self.menuBar().addMenu("Archivo")
         edit_rules = menu.addAction("Editar reglas...")
         edit_rules.triggered.connect(self.edit_rules)
+        edit_yaml = menu.addAction("Editar YAML...")
+        edit_yaml.triggered.connect(self.edit_yaml)
 
     # --------------------------------------------------------------- Actions ----
     def edit_rules(self) -> None:
+        dialog = RuleManager("rules.yaml", self)
+        if dialog.exec():
+            self.rules = load_rules("rules.yaml")
+            self.last_exec.clear()
+
+    def edit_yaml(self) -> None:
         dialog = MacroEditor("rules.yaml", self)
         if dialog.exec():
             self.rules = load_rules("rules.yaml")
