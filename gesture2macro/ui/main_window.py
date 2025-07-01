@@ -17,6 +17,7 @@ from ..rules import Rule, load_rules
 from ..utils.image_tools import to_rgb
 from .macro_editor import MacroEditor
 from .rule_manager import RuleManager
+from .tray import SystemTray
 from ..utils.logger import get_logger
 
 
@@ -39,6 +40,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._create_ui()
         self._apply_dark_theme()
+        self.tray = SystemTray(self)
+        self.tray.show()
 
         self.logger.info("Ventana principal iniciada")
 
@@ -129,6 +132,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # ------------------------------------------------------------- Qt Events ----
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:  # type: ignore[override]
+        event.ignore()
+        self.hide()
+        if self.tray.isVisible():
+            self.tray.showMessage(
+                "Gesture2Macro",
+                "El programa sigue ejecut\u00e1ndose en la bandeja.",
+                msecs=3000,
+            )
+
+    def force_quit(self) -> None:
+        self.tray.hide()
         self.timer.stop()
         self.camera.release()
-        super().closeEvent(event)
+        QtWidgets.QApplication.quit()
