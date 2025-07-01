@@ -23,3 +23,17 @@ Al guardar desde el editor integrado se crea autom\u00e1ticamente una copia `rul
 - Nuevos tipos de macro: `open_app`, `write_text` y `move_cursor`.
 - Sonido de confirmación al ejecutar una acción.
 - Ventana gráfica para gestionar reglas sin editar YAML manualmente.
+
+
+## Ejecutable para Windows
+
+Para generar un instalador listo para usar ejecuta el script `build_windows.bat`.
+Este archivo instalar\u00e1 las dependencias necesarias y crear\u00e1 un
+`Gesture2Macro.exe` dentro de la carpeta `dist` mediante PyInstaller.
+
+```cmd
+build_windows.bat
+```
+
+Una vez finalizado el proceso abre `dist\Gesture2Macro.exe` para utilizar la
+aplicaci\u00f3n sin requerir Python instalado.
